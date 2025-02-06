@@ -16,7 +16,10 @@ exports.register = async (req, res) => {
       role_id: req.body.role_id,
       password: hashedPassword,
     });
-    res.status(201).json({ message: "User registered successfully", user });
+    res.status(201).json({
+      message: "User registered successfully",
+      user: { username: user.username },
+    });
   } catch (error) {
     console.error(error);
     res.status(400).json({ error: error.message });
@@ -40,14 +43,19 @@ exports.login = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: false, // Secure should be true for production
+      sameSite: "Strict",
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
+      sameSite: "Strict",
     });
 
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({
+      message: "Login successful",
+      user: { username: user.username },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -104,7 +112,10 @@ exports.checkAuth = async (req, res) => {
     if (!user) {
       return res.status(403).json({ error: "User not found" });
     }
-    res.json({ message: "Authenticated successfully", user });
+    res.json({
+      message: "Authenticated successfully",
+      user: { username: user.username },
+    });
   } catch (error) {
     // console.error(error);
     res.status(500).json({ error: error.message });

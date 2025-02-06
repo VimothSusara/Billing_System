@@ -13,12 +13,11 @@ const authRoutes = require("./routes/auth.routes");
 const app = express();
 
 app.use(
-  cors()
-  //   {
-  //   origin: process.env.CLIENT_URL,
-  //   credentials: true,
-  //   // optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  // }
+  cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+    // optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  })
 );
 
 // middleware

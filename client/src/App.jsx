@@ -20,7 +20,7 @@ function App() {
 
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   if (loading) {
     return <LoadingScreen />;
@@ -34,7 +34,7 @@ function App() {
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />
+              isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
             }
           />
           <Route element={<ProtectedRoute />}>
@@ -43,7 +43,7 @@ function App() {
               <Route path="/module" element={<Module />} />
             </Route>
           </Route>
-          <Route path="/*" element={<Navigate to="/login" replace />} />
+          <Route path="/*" element={<Navigate to="/login" />} />
         </Routes>
       </Router>
     </>

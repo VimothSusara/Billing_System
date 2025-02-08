@@ -1,26 +1,36 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="flex flex-col w-64 bg-gray-800 text-white p-4">
-      <Link to="/dashboard" className="block py-2 px-4 hover:bg-gray-700">
+    <div className="flex flex-col w-72 bg-gray-800 text-white p-4">
+      <NavLink
+        to="/dashboard"
+        className={({ isActive }) =>
+          "block py-2 px-4 hover:bg-gray-700" + (isActive ? " bg-gray-600" : "")
+        }
+      >
         Dashboard
-      </Link>
-      <Link to="/module" className="block py-2 px-4 hover:bg-gray-700">
+      </NavLink>
+      <NavLink
+        to="/module"
+        className={({ isActive }) =>
+          "block py-2 px-4 hover:bg-gray-700" + (isActive ? " bg-gray-600" : "")
+        }
+      >
         Module
-      </Link>
-      <Link to="/products" className="block py-2 px-4 hover:bg-gray-700">
+      </NavLink>
+      <NavLink to="/products" className="block py-2 px-4 hover:bg-gray-700">
         Products
-      </Link>
-      <Link to="/orders" className="block py-2 px-4 hover:bg-gray-700">
+      </NavLink>
+      <NavLink to="/orders" className="block py-2 px-4 hover:bg-gray-700">
         Orders
-      </Link>
-      <Link to="/invoices" className="block py-2 px-4 hover:bg-gray-700">
+      </NavLink>
+      <NavLink to="/invoices" className="block py-2 px-4 hover:bg-gray-700">
         Invoices
-      </Link>
-      <Link to="/settings" className="block py-2 px-4 hover:bg-gray-700">
+      </NavLink>
+      <NavLink to="/settings" className="block py-2 px-4 hover:bg-gray-700">
         Settings
-      </Link>
+      </NavLink>
     </div>
   );
 };

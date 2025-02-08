@@ -12,6 +12,7 @@ const Dashboard = () => {
       clearToast();
     }
   }, [toastMessage, clearToast]);
+
   return (
     <>
       <h1>Dashboard Page</h1>

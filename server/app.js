@@ -39,8 +39,8 @@ sequelize
   .then(() => console.log("db connection established"))
   .catch((err) => console.error("Unable to connect to the database", err));
 
-sequelize.sync().then(() => {
+// sequelize.sync().then(() => {
   app.listen(8080, () => {
     console.log("Server is running on port 8080");
   });
-});
+// });

@@ -1,13 +1,19 @@
 const { Sequelize } = require("sequelize");
+const env = process.env.NODE_ENV || "development";
 
-const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  {
-    host: process.env.DB_HOST,
-    dialect: "mysql",
-  }
-);
+const config = require("../config/config.js")[env];
+
+let sequelize;
+
+if (config.url) {
+  sequelize = new Sequelize(config.url, config);
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config
+  );
+}
 
 module.exports = sequelize;

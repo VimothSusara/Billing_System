@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { Flip, ToastContainer, toast } from "react-toastify";
-import logo from "../assets/images/logo.png";
+import logo from "@/assets/images/logo.png";
 
-import useAuthStore from "../store/authStore";
+import useAuthStore from "@/store/authStore";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -34,12 +34,12 @@ const Login = () => {
     } else {
       toast.error(result.message);
       clearToast();
-    }
+      }
   };
 
   return (
     <>
-      <div className="flex flex-col mx-auto justify-center w-[370px] px-2 pt-0 pb-5 shadow-lg inset-shadow-zinc-200 rounded-md">
+      <div className="flex flex-col mx-auto mt-20 justify-center w-[370px] px-2 pt-0 pb-5 shadow-lg inset-shadow-zinc-200 rounded-md">
         <div className="mx-auto">
           <img className="h-32 w-auto mx-auto" src={logo} alt="Logo" />
           <h2 className="text-center mt-0 text-2xl font-bold text-blue-500">

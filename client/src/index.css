@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@plugin 'tailwind-scrollbar' {
+    nocompatible: true;
+    preferredStrategy: 'pseudoelements';
+}
+
+@theme {
+    --color-deep-indigo: #1E3A8A;
+    --color-secondary-blue: #3B82F6;
+    --color-soft-sky-blue: #BFDBFE;
+    --color-vibrant-blue: #60A5FA;
+    --color-deep-blue: #3498DB;
+    --color-light-gray: #EEEEEE;
+    --color-medium-gray: #E0E0E0;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}

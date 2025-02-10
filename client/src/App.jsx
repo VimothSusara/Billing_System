@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,21 +6,31 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import useAuthStore from "./store/authStore";
-import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
-import Login from "./pages/Login";
-import Navbar from "./components/navigation/Navbar";
-import MainLayout from "./layouts/MainLayout";
-import Dashboard from "./pages/Dashboard";
-import Module from "./pages/Module";
-import LoadingScreen from "./components/LoadingScreen";
+import useAuthStore from "@/store/authStore";
+import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
+import Login from "@/pages/Auth/Login";
+import Navbar from "@/components/navigation/Navbar";
+import MainLayout from "@/layouts/MainLayout";
+import LoadingScreen from "@/components/LoadingScreen";
+
+//import route
+import RouteList from "@/routes/RouteList";
 
 function App() {
-  const { checkAuth, isAuthenticated, loading } = useAuthStore();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const loading = useAuthStore((state) => state.loading);
+  const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+    try {
+      checkAuth();
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
+
+  const lastRoute = localStorage.getItem("lastRoute");
+  const isValidRoute = RouteList.some((route) => route.path === lastRoute);
 
   if (loading) {
     return <LoadingScreen />;
@@ -30,21 +40,35 @@ function App() {
     <>
       <Router>
         <Navbar />
-        <Routes>
-          <Route
-            path="/login"
-            element={
-              isAuthenticated ? <Navigate to="/dashboard" /> : <Login />
-            }
-          />
-          <Route element={<ProtectedRoute />}>
-            <Route element={<MainLayout />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/module" element={<Module />} />
+        <Suspense fallback={<LoadingScreen />}>
+          <Routes>
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? (
+                  <Navigate to={isValidRoute ? lastRoute : "/dashboard"} />
+                ) : (
+                  <Login />
+                )
+              }
+            />
+            <Route element={<ProtectedRoute />}>
+              <Route element={<MainLayout />}>
+                {RouteList.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={route.element}
+                  />
+                ))}
+              </Route>
             </Route>
-          </Route>
-          <Route path="/*" element={<Navigate to="/login" />} />
-        </Routes>
+            <Route
+              path="/*"
+              element={loading ? null : <Navigate to="/login" />}
+            />
+          </Routes>
+        </Suspense>
       </Router>
     </>
   );

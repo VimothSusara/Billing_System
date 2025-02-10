@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Flip, ToastContainer, toast } from "react-toastify";
 
-import useAuthStore from "../store/authStore";
+import useAuthStore from "@/store/authStore";
 
 const Dashboard = () => {
   const { toastMessage, clearToast } = useAuthStore();

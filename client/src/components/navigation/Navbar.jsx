@@ -1,8 +1,4 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { MdOutlineMenu } from "react-icons/md";
-
-import useAuthStore from "../../store/authStore";
+import useAuthStore from "@/store/authStore";
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuthStore();
@@ -13,14 +9,14 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="w-full p-4 flex justify-between items-center shadow-md shadow-gray-300">
+      <nav className="w-full fixed top-0 left-0 h-16 p-4 flex justify-between z-20 shadow-md shadow-medium-gray bg-deep-indigo items-center">
         <div className="flex items-center">
-          <h1 className="text-2xl font-semibold">Billing System</h1>
+          <h1 className="text-2xl font-semibold text-white">Billing System</h1>
         </div>
 
         {isAuthenticated ? (
           <div className="flex flex-row justify-around gap-0.5">
-            <button className="" onClick={handleLogout}>
+            <button className="text-white" onClick={handleLogout}>
               Log Out
             </button>
           </div>

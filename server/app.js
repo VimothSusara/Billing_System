@@ -9,6 +9,8 @@ const path = require("path");
 // Import routes
 const authRoutes = require("./routes/auth.routes");
 const itemRoutes = require("./routes/item.routes");
+const supplierRoutes = require("./routes/supplier.routes");
+const itemCategoryRoutes = require("./routes/item_category.routes");
 
 // express app
 const app = express();
@@ -32,6 +34,8 @@ app.use(cookieParser());
 // routes
 app.use("/api/auth", authRoutes);
 app.use("/api/items", itemRoutes);
+app.use("/api/suppliers", supplierRoutes);
+app.use("/api/categories", itemCategoryRoutes);
 
 // Handle all other routes by serving the 'index.html' file
 // app.get("*", (req, res) => {

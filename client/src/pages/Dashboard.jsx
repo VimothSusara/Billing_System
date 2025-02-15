@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Flip, ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import useAuthStore from "@/store/authStore";
+import Toast from "@/components/Toast";
 
 const Dashboard = () => {
   const { toastMessage, clearToast } = useAuthStore();
@@ -16,12 +17,7 @@ const Dashboard = () => {
   return (
     <>
       <h1>Dashboard Page</h1>
-      <ToastContainer
-        position="top-center"
-        autoClose="2000"
-        theme="dark"
-        transition={Flip}
-      />
+      <Toast />
     </>
   );
 };

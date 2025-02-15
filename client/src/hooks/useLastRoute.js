@@ -9,7 +9,7 @@ const useLastRoute = (location, isAuthenticated) => {
         console.error("Error saving last route to localStorage:", e);
       }
     }
-  }, [isAuthenticated, location]);
+  }, [location]);
 };
 
 export default useLastRoute;

@@ -33,13 +33,12 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ where: { username: req.body.username } });
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
-      next();
     }
     const isMatch = await bcrypt.compare(req.body.password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
-      next();
     }
+    
     const accessToken = generateAccessToken(user.user_id);
     const refreshToken = generateRefreshToken(user.user_id);
 

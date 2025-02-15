@@ -1,5 +1,7 @@
 import { create } from "zustand";
-import axios from "axios";
+
+import { login, logout, checkAuth, refreshToken } from "@/services/authService";
+import { handleError } from "@/utils/errorHandler";
 
 const useAuthStore = create((set) => ({
   user: null,
@@ -11,72 +13,64 @@ const useAuthStore = create((set) => ({
     set({ loading: true });
 
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_SERVER_HOST}/api/auth/login`,
-        { username, password },
-        { withCredentials: true }
-      );
-
+      const res = await login(username, password);
       set({
         user: res.data.user,
         isAuthenticated: true,
         loading: false,
         toastMessage: "Login successful!",
       });
-
       localStorage.setItem("lastRoute", "/dashboard");
-
       return { success: true };
     } catch (err) {
+      const errorMessage = handleError(err);
       set({
         user: null,
         isAuthenticated: false,
         loading: false,
-        toastMessage: err.response?.data?.error || "Login failed!",
+        toastMessage: errorMessage,
       });
       return {
         success: false,
-        message: err.response?.data?.error || err.error,
+        message: errorMessage,
       };
     }
   },
 
   logout: async () => {
-    await axios.post(
-      `${import.meta.env.VITE_SERVER_HOST}/api/auth/logout`,
-      {},
-      { withCredentials: true }
-    );
-    localStorage.removeItem("lastRoute");
-    set({ user: null, isAuthenticated: false });
+    try {
+      await logout();
+      localStorage.removeItem("lastRoute");
+      set({ user: null, isAuthenticated: false });
+    } catch (err) {
+      const errorMessage = handleError(err);
+      set({ toastMessage: errorMessage });
+    }
   },
 
   checkAuth: async () => {
     set({ loading: true });
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_HOST}/api/auth/check`,
-        { withCredentials: true }
-      );
+      const res = await checkAuth();
       set({ user: res.data.user, isAuthenticated: true, loading: false });
       // const lastRoute = localStorage.getItem("lastRoute");
       // if (lastRoute) {
       //   console.log("User redirected to: ", lastRoute);
       // }
     } catch {
-      set({ user: null, isAuthenticated: false, loading: false });
+      set({
+        user: null,
+        isAuthenticated: false,
+        loading: false,
+      });
       // await refreshAuth();
     }
   },
 
   refreshAuth: async () => {
     try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_SERVER_HOST}/api/auth/refresh`,
-        { withCredentials: true }
-      );
-      const { user } = res.data;
-      set({ user, isAuthenticated: true, loading: false });
+      const res = await refreshToken();
+      set({ user: res.data.user, isAuthenticated: true, loading: false });
     } catch {
       set({ user: null, isAuthenticated: false, loading: false });
     }

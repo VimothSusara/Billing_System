@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useMemo } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -7,68 +7,68 @@ import {
 } from "react-router-dom";
 
 import useAuthStore from "@/store/authStore";
-import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
+// import ProtectedRoute from "@/components/protectedRoute/ProtectedRoute";
 import Login from "@/pages/Auth/Login";
 import Navbar from "@/components/navigation/Navbar";
 import MainLayout from "@/layouts/MainLayout";
 import LoadingScreen from "@/components/LoadingScreen";
 
-//import route
+// Import route
 import RouteList from "@/routes/RouteList";
 
 function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  const loading = useAuthStore((state) => state.loading);
-  const checkAuth = useAuthStore((state) => state.checkAuth);
+  const { isAuthenticated, checkAuth, loading } = useAuthStore();
 
   useEffect(() => {
-    try {
-      checkAuth();
-    } catch (e) {
-      console.log(e);
-    }
-  }, []);
+    const verifyAuth = async () => {
+      try {
+        await checkAuth();
+      } catch (e) {
+        console.log(e);
+      }
+    };
+
+    verifyAuth();
+  }, [checkAuth]);
 
   const lastRoute = localStorage.getItem("lastRoute");
   const isValidRoute = RouteList.some((route) => route.path === lastRoute);
 
-  if (loading) {
-    return <LoadingScreen />;
-  }
+  const loginElement = useMemo(() => {
+    return isAuthenticated ? (
+      <Navigate to={isValidRoute ? lastRoute : "/dashboard"} />
+    ) : (
+      <Login />
+    );
+  }, [isAuthenticated, isValidRoute, lastRoute]);
+
+  const protectedElement = useMemo(() => {
+    return isAuthenticated ? <MainLayout /> : <Navigate to="/login" />;
+  }, [isAuthenticated]);
+
+  const routes = useMemo(() => {
+    if (loading) {
+      return <LoadingScreen />;
+    }
+
+    return (
+      <Routes>
+        <Route path="/login" element={loginElement} />
+        <Route element={protectedElement}>
+          {RouteList.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))}
+        </Route>
+        <Route path="/*" element={<Navigate to="/login" />} />
+      </Routes>
+    );
+  }, [loading, loginElement, protectedElement]);
 
   return (
     <>
       <Router>
         <Navbar />
-        <Suspense fallback={<LoadingScreen />}>
-          <Routes>
-            <Route
-              path="/login"
-              element={
-                isAuthenticated ? (
-                  <Navigate to={isValidRoute ? lastRoute : "/dashboard"} />
-                ) : (
-                  <Login />
-                )
-              }
-            />
-            <Route element={<ProtectedRoute />}>
-              <Route element={<MainLayout />}>
-                {RouteList.map((route) => (
-                  <Route
-                    key={route.path}
-                    path={route.path}
-                    element={route.element}
-                  />
-                ))}
-              </Route>
-            </Route>
-            <Route
-              path="/*"
-              element={loading ? null : <Navigate to="/login" />}
-            />
-          </Routes>
-        </Suspense>
+        <Suspense fallback={<LoadingScreen />}>{routes}</Suspense>
       </Router>
     </>
   );

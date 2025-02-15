@@ -3,15 +3,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert(
-      "Roles",
-      [
-        { role_id: 1, role_name: "Admin" },
-        { role_id: 2, role_name: "Manager" },
-        { role_id: 3, role_name: "User" },
-      ],
-      {}
-    );
+    await queryInterface.bulkInsert("ItemTypes", [
+      {
+        type_name: "Normal",
+        status: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        type_name: "Service",
+        status: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        type_name: "Serial",
+        status: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]);
     /**
      * Add seed commands here.
      *
@@ -24,7 +35,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Roles", null, {}); // always use the table name of the model
+    await queryInterface.bulkDelete("ItemTypes", null, {});
     /**
      * Add commands to revert seed here.
      *
